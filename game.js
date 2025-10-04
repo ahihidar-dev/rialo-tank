@@ -47,6 +47,7 @@ const MAX_ALLIES = 2; // batas maksimal bala bantuan NPC
 
 // Game State
 let gameRunning = false;
+let gamePaused = false;
 let score = 0;
 let lastWallRespawnTime = 0;
 const WALL_RESPAWN_TIME = 10000; // 10 detik
@@ -1041,7 +1042,7 @@ function spawnEnemy() {
 
 // Update game state
 function update() {
-    if (gameOver) return;
+    if (gameOver || gamePaused) return;
     
     // Check for boss level and spawn boss if needed
     if (gameLevel % 5 === 0 && !bossSpawned && enemies.length < maxEnemies) {
@@ -1348,6 +1349,18 @@ function draw() {
     ctx.fillStyle = 'white';
     ctx.textAlign = 'left';
     ctx.fillText(`HP: ${Math.max(0, Math.ceil(player.health))}%`, healthBarX + 5, healthBarY + 16);
+
+    // Pause overlay
+    if (gamePaused) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 36px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        ctx.restore();
+    }
 }
 
 // Game loop
@@ -1375,6 +1388,7 @@ function gameLoop(timestamp) {
 function startGame() {
     // Reset game state
     gameRunning = true;
+    gamePaused = false;
     gameOver = false;
     score = 0;
     gameLevel = 1;
@@ -1429,6 +1443,11 @@ window.addEventListener('keydown', (e) => {
     // Spawn ally with B key
     if ((e.key === 'b' || e.key === 'B') && gameRunning && !gameOver) {
         spawnAlly();
+    }
+
+    // Toggle pause with P
+    if ((e.key === 'p' || e.key === 'P') && gameRunning && !gameOver) {
+        gamePaused = !gamePaused;
     }
 });
 
