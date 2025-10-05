@@ -492,9 +492,8 @@ function isPositionOccupied(x, y, radius) {
 
 // Spawn a power-up
 function spawnPowerUp(forceSpawn = false) {
-    // 50% chance to spawn a power-up when not forced
-    // Kurangi peluang spawn saat tidak dipaksa: ~30%
-    if (!forceSpawn && Math.random() > 0.3) return;
+    // Sedikit ditingkatkan: ~40% saat tidak dipaksa
+    if (!forceSpawn && Math.random() > 0.4) return;
     
     const powerUpTypes = Object.keys(POWERUP_TYPES);
     const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
@@ -1261,9 +1260,8 @@ function update() {
         spawnEnemy();
     }
     
-    // Spawn power-ups periodically (every 10-15 seconds)
-    // Kurangi frekuensi spawn periodik dan batasi jumlah maksimal aktif
-    if (Math.random() < 0.0004 && powerUps.length < 2) {
+    // Spawn power-ups periodically (sedikit lebih sering, dan boleh hingga 3 aktif)
+    if (Math.random() < 0.0007 && powerUps.length < 3) {
         spawnPowerUp();
     }
     
