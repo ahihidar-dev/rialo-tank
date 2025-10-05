@@ -6,6 +6,13 @@ const ctx = canvas.getContext('2d');
 const tankImage = new Image();
 tankImage.src = 'assets/tank-logo.png'; // Player tank image
 
+// Load wall image (texture)
+const wallImage = new Image();
+let wallTextureReady = false;
+wallImage.onload = () => { wallTextureReady = wallImage.naturalWidth > 0; };
+wallImage.onerror = () => { wallTextureReady = false; };
+wallImage.src = 'assets/wall.png'; // Save the provided image as assets/wall.png
+
 // Load enemy tank images
 const enemyTankImages = [
     new Image(), // tank-logo-1.png
@@ -194,8 +201,19 @@ class Wall {
     
     draw() {
         ctx.save();
-        ctx.fillStyle = this.indestructible ? '#7f8c8d' : '#8B4513';
-        ctx.fillRect(this.x - this.width/2, this.y - this.height/2, this.width, this.height);
+        // Draw textured wall if image loaded correctly, else fallback color
+        if (wallTextureReady) {
+            ctx.drawImage(
+                wallImage,
+                this.x - this.width/2,
+                this.y - this.height/2,
+                this.width,
+                this.height
+            );
+        } else {
+            ctx.fillStyle = this.indestructible ? '#7f8c8d' : '#8B4513';
+            ctx.fillRect(this.x - this.width/2, this.y - this.height/2, this.width, this.height);
+        }
         
         // Draw health for destructible walls
         if (!this.indestructible) {
